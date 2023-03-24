@@ -1,6 +1,6 @@
 package com.example.weatherapp.service
 
-import com.example.weatherapp.model.SearchModel
+import com.example.weatherapp.model.LocationModel
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -13,5 +13,5 @@ interface SearchService {
     fun getLocation(
         @Query("q") query: String,
         @Query("appid") apiKey: String
-    ): Call<List<SearchModel>>
+    ): Call<List<LocationModel>>
 }

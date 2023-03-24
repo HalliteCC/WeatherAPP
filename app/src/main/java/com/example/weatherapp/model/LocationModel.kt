@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 //data class Main(val lat: Double, val long: Double)
 //data class GetCityModel(val name: String, val main: Main)
-class SearchModel {
+class LocationModel {
 
     @SerializedName("name")
     lateinit var cityName: String

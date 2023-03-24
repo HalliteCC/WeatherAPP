@@ -1,11 +1,13 @@
 package com.example.weatherapp.repository
 
 import android.content.Context
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
 open class BaseRepository(val context: Context) {
 
+    //Verificando conexção
     fun isConnectionAvaiable(): Boolean {
         var result = false
 
