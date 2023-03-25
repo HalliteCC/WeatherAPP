@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -26,13 +27,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        locationEnable()
+        checkPermission()
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         binding = ActivityMainBinding.inflate((layoutInflater))
         setContentView(binding.root)
 
-
+        observeLocation()
     }
 
     override fun onClick(v: View) {
@@ -57,9 +58,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
+    fun observeLocation(){
+        viewModel.locationLiveData.observe(this, Observer { location ->
+            // Exibe a latitude e a longitude da localização atual
+            val latitude = location?.latitude
+            val longitude = location?.longitude
 
-    fun observer() {
-
+        })
+    }
+    //Verificando permissão
+    private fun checkPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ){
+            requestPermission()
+        }
+    }
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION), myRequestCode)
     }
 
     fun handleSearch() {
@@ -67,36 +84,4 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.getLocation(location)
     }
 
-    fun locationEnable(){
-        if(checkPermission()){
-            if(isLocationAvaiable()){
-                var s = ""
-            }else {
-                Toast.makeText(this, "Turn on the GPS", Toast.LENGTH_SHORT).show()
-            }
-         }else {
-             requestPermission()
-        }
-    }
-
-    // Acesso ao gps
-    private fun isLocationAvaiable(): Boolean {
-        var lm = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-        }
-
-
-    //Verificando permissão
-    private fun checkPermission(): Boolean{
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        ){
-            return true
-        }
-        return false
-    }
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION), myRequestCode)
-    }
 }

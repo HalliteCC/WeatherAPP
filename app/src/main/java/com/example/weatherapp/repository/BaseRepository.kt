@@ -1,9 +1,13 @@
 package com.example.weatherapp.repository
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 open class BaseRepository(val context: Context) {
 
@@ -23,4 +27,19 @@ open class BaseRepository(val context: Context) {
         return result
     }
 
+
+     fun isLocationAvaiable(): Boolean {
+        var lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER)
+    }
+
+     fun checkPermission(): Boolean{
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ){
+            return true
+        }
+        return false
+    }
 }
